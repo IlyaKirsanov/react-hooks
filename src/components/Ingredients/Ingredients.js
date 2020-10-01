@@ -7,33 +7,42 @@ import Search from './Search';
 const Ingredients = () => {
 
   const [userIngredients, setUserIngredients] = useState([])
-  
+
   const addIngredientHandler = ingredient => {
-    setUserIngredients(prevIngredients => [...prevIngredients, 
+    fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json', {
+      method: 'POST',
+      body: JSON.stringify({ ingredient }),
+      headers: { 'Content-Type': 'application/json' }
+    }).then(response => {
+      return response.json();
+    }).then(responseData => {
+      setUserIngredients(prevIngredients => [...prevIngredients,
       {
-        id: Math.random().toString(), 
+        id: responseData.name,
         ...ingredient
       }])
+    })
   }
 
-  const removeIngredientHandler = ingredientId =>{
+  const removeIngredientHandler = ingredientId => {
     setUserIngredients(prevIngredients => prevIngredients.filter(
       ingredient => ingredient.id !== ingredientId))
   }
 
   return (
     <div className="App">
-      <IngredientForm  onAddIngredient={addIngredientHandler}/>
+      <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
         <Search />
-        <IngredientList 
-          ingredients={userIngredients} 
+        <IngredientList
+          ingredients={userIngredients}
           onRemoveItem={removeIngredientHandler} />
         {/* Need to add list here! */}
       </section>
     </div>
   );
 }
+
 
 export default Ingredients;
