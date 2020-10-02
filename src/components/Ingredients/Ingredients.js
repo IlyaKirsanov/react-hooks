@@ -13,24 +13,6 @@ const Ingredients = () => {
       setUserIngredients(filterIngredients)
     }, [])
 
-  // useEffect(() => {
-  //   fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json')
-  //     .then(response => response.json())
-  //     .then(responseData => {
-  //       console.log(responseData);
-  //       const loadedIngredinet = [];
-  //       for (const key in responseData) {
-  //         loadedIngredinet.push({
-  //           id: key,
-  //           title: responseData[key].title,
-  //           amount: responseData[key].amount
-  //         })
-  //       }
-  //       console.log(loadedIngredinet);
-  //       setUserIngredients(loadedIngredinet)
-  //     })
-  // }, [])
-
   useEffect(() => {
     console.log('RENDERING INGREDIENTS', userIngredients)
   }, [userIngredients])
@@ -55,8 +37,13 @@ const Ingredients = () => {
   }
 
   const removeIngredientHandler = ingredientId => {
-    setUserIngredients(prevIngredients => prevIngredients.filter(
-      ingredient => ingredient.id !== ingredientId))
+
+    fetch(`https://react-hooks-test-9ea4d.firebaseio.com/ingredients/${ingredientId}.json`, {
+      method: 'DELETE'
+    }).then(
+      setUserIngredients(prevIngredients => prevIngredients.filter(
+        ingredient => ingredient.id !== ingredientId))
+    )
   }
 
   return (
