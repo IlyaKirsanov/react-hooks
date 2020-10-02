@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -8,10 +8,32 @@ const Ingredients = () => {
 
   const [userIngredients, setUserIngredients] = useState([])
 
+  useEffect(() => {
+    fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json')
+      .then(response => response.json())
+      .then(responseData => {
+        const loadedIngredinet = [];
+        for (const key in loadedIngredinet) {
+          loadedIngredinet.push({
+            id: key,
+            title: responseData[key].title,
+            amount: responseData[key].amount
+          })
+        }
+        setUserIngredients(loadedIngredinet)
+      })
+  }, [])
+
+  useEffect(() => {
+    console.log('RENDERING INGREDIENTS', userIngredients)
+  }, [userIngredients])
+
+
+
   const addIngredientHandler = ingredient => {
     fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json', {
       method: 'POST',
-      body: JSON.stringify({ ingredient }),
+      body: JSON.stringify( ingredient ),
       headers: { 'Content-Type': 'application/json' }
     }).then(response => {
       return response.json();
