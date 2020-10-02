@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -8,21 +8,28 @@ const Ingredients = () => {
 
   const [userIngredients, setUserIngredients] = useState([])
 
-  useEffect(() => {
-    fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json')
-      .then(response => response.json())
-      .then(responseData => {
-        const loadedIngredinet = [];
-        for (const key in loadedIngredinet) {
-          loadedIngredinet.push({
-            id: key,
-            title: responseData[key].title,
-            amount: responseData[key].amount
-          })
-        }
-        setUserIngredients(loadedIngredinet)
-      })
-  }, [])
+  const filteredIngredientsHandler = useCallback(
+    filterIngredients => {
+      setUserIngredients(filterIngredients)
+    }, [])
+
+  // useEffect(() => {
+  //   fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json')
+  //     .then(response => response.json())
+  //     .then(responseData => {
+  //       console.log(responseData);
+  //       const loadedIngredinet = [];
+  //       for (const key in responseData) {
+  //         loadedIngredinet.push({
+  //           id: key,
+  //           title: responseData[key].title,
+  //           amount: responseData[key].amount
+  //         })
+  //       }
+  //       console.log(loadedIngredinet);
+  //       setUserIngredients(loadedIngredinet)
+  //     })
+  // }, [])
 
   useEffect(() => {
     console.log('RENDERING INGREDIENTS', userIngredients)
@@ -31,9 +38,10 @@ const Ingredients = () => {
 
 
   const addIngredientHandler = ingredient => {
+
     fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json', {
       method: 'POST',
-      body: JSON.stringify( ingredient ),
+      body: JSON.stringify(ingredient),
       headers: { 'Content-Type': 'application/json' }
     }).then(response => {
       return response.json();
@@ -56,7 +64,7 @@ const Ingredients = () => {
       <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
-        <Search />
+        <Search onLoadIngredients={filteredIngredientsHandler} />
         <IngredientList
           ingredients={userIngredients}
           onRemoveItem={removeIngredientHandler} />
