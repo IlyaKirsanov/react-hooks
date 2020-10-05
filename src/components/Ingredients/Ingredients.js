@@ -36,13 +36,8 @@ const Ingredients = () => {
 
   const [userIngredients, dispatch] = useReducer(ingredientReducer, [])
   const [httpState, dispatchHttp] = useReducer(httpReducer, { loading: false, error: null })
-  // const [userIngredients, setUserIngredients] = useState([])
-  // const [isLoading, setIsLoading] = useState(false)
-  // const [error, setError] = useState()
-
   const filteredIngredientsHandler = useCallback(
     filterIngredients => {
-      //setUserIngredients(filterIngredients)
       dispatch({ type: 'SET', ingredients: filterIngredients })
     }, [])
 
@@ -53,7 +48,6 @@ const Ingredients = () => {
 
 
   const addIngredientHandler = ingredient => {
-    //setIsLoading(true)
     dispatchHttp({type:'SEND'})
     fetch('https://react-hooks-test-9ea4d.firebaseio.com/ingredients.json', {
       method: 'POST',
@@ -63,8 +57,6 @@ const Ingredients = () => {
       dispatchHttp({type: 'RESPONSE'})
       return response.json();
     }).then(responseData => {
-      // setUserIngredients(prevIngredients => [...prevIngredients,
-      // { id: responseData.name,...ingredient }])
       dispatch({
         type: 'ADD', ingredient: { id: responseData.name, ...ingredient }
       })
@@ -77,12 +69,8 @@ const Ingredients = () => {
       method: 'DELETE'
     }).then(response => {
       dispatchHttp({ type: 'RESPONSE' })
-      // setUserIngredients(prevIngredients => prevIngredients.filter(
-      //   ingredient => ingredient.id !== ingredientId))
       dispatch({ type: 'DELETE', id: ingredientId })
     }).catch(error => {
-      // setError(error.message)
-      // setIsLoading(false)
       dispatchHttp({ type: 'ERROR', errorMessage: error.message })
     })
   }
